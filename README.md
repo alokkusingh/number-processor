@@ -63,12 +63,12 @@ Created by [Alok Singh](https://github.com/alokkusingh)
 Run the application by executing following command
 ```
 cd number-processor
-java -jar target/number-processor-0.0.1-SNAPSHOT.jar 1 2 6 4 3 PARALLEL
+java -jar target/number-processor-1.0.0.jar 1 2 6 4 3 PARALLEL 
 ```
 Or
 ```
 cd number-processor
-java -jar target/number-processor-0.0.1-SNAPSHOT.jar 1 2 6 4 3 SEQUENTIAL
+java -jar target/number-processor-1.0.0.jar 1 2 6 4 3 SEQUENTIAL
 ``` 
 
 ## Download Jar Build

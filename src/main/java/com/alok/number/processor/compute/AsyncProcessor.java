@@ -13,13 +13,7 @@ import java.util.concurrent.CyclicBarrier;
 @Builder
 public class AsyncProcessor implements Processor {
 
-    protected String type;
-    protected long startTime;
-    protected Set<Integer> numbers;
-
-    @Builder.Default
-    private final TaskExecutor taskExecutor = new SimpleAsyncTaskExecutor();
-    private CyclicBarrier barrier;
+    private Set<Integer> numbers;
 
     @Override
     public void process() {
@@ -30,7 +24,7 @@ public class AsyncProcessor implements Processor {
             System.out.println("ERROR: " + e.getMessage());
             return;
         }
-        barrier = new CyclicBarrier(3, SummaryPrinter.builder().numbers(sortedNumbers).type("PARALLEL").build());
+        CyclicBarrier barrier = new CyclicBarrier(3, SummaryPrinter.builder().numbers(sortedNumbers).type("PARALLEL").build());
 
         List<Runnable> tasks = Arrays.asList(
                 Executor.builder()
@@ -47,6 +41,7 @@ public class AsyncProcessor implements Processor {
                         .build()
         );
 
+        TaskExecutor taskExecutor = new SimpleAsyncTaskExecutor();
         tasks.forEach(task -> taskExecutor.execute(task));
     }
 }

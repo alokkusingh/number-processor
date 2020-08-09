@@ -12,12 +12,7 @@ import java.util.Set;
 @Builder
 public class SyncProcessor implements Processor {
 
-    protected String type;
-    protected long startTime;
-    protected Set<Integer> numbers;
-
-    @Builder.Default
-    private final TaskExecutor taskExecutor = new SyncTaskExecutor();
+    private Set<Integer> numbers;
 
     @Override
     public void process() {
@@ -42,6 +37,7 @@ public class SyncProcessor implements Processor {
                 SummaryPrinter.builder().numbers(sortedNumbers).type("SEQUENTIAL").build()
         );
 
+        TaskExecutor taskExecutor = new SyncTaskExecutor();
         tasks.forEach(task -> taskExecutor.execute(task));
     }
 }
