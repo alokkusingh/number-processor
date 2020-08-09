@@ -7,7 +7,8 @@ Table of Contents
    * [Computations](#computations)
    * [Examples](#examples)
    * [Run Command](#run-command)
-   * [Download Build](#download-build)
+   * [Download Jar Build](#download-jar-build)
+   * [Docker Build](#docker-build)
 
 Created by [Alok Singh](https://github.com/alokkusingh)
 
@@ -70,5 +71,16 @@ cd number-processor
 java -jar target/number-processor-0.0.1-SNAPSHOT.jar 1 2 6 4 3 SEQUENTIAL
 ``` 
 
-## Download Build
+## Download Jar Build
 Get the latest build from [number-processor](https://github.com/alokkusingh/number-processor/packages/349251)
+
+## Docker Build
+Build Docker Image
+```
+cd number-processor
+docker build -t alokkusingh/number-processor:1.0.0 --build-arg JAR_FILE=target/number-processor-1.0.0.jar .
+``` 
+Build Docker Image
+```
+docker run --name number-processor alokkusingh/number-processor:1.0.0 1 2 6 4 3 SEQUENTIALL
+```
