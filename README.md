@@ -7,6 +7,7 @@ Table of Contents
    * [Computations](#computations)
    * [Examples](#examples)
    * [Run Command](#run-command)
+   * [Download Build](#download-build)
 
 Created by [Alok Singh](https://github.com/alokkusingh)
 
@@ -69,5 +70,5 @@ cd number-processor
 java -jar target/number-processor-0.0.1-SNAPSHOT.jar 1 2 6 4 3 SEQUENTIAL
 ``` 
 
-## Build
+## Download Build
 Get the latest build from [number-processor](https://github.com/alokkusingh/number-processor/packages/349251)
