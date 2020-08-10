@@ -2,13 +2,13 @@ package com.alok.number.processor.compute;
 
 import com.alok.number.processor.compute.task.*;
 import lombok.Builder;
-import org.springframework.core.task.SimpleAsyncTaskExecutor;
-import org.springframework.core.task.TaskExecutor;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CyclicBarrier;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @Builder
 public class AsyncProcessor implements Processor {
@@ -41,7 +41,9 @@ public class AsyncProcessor implements Processor {
                         .build()
         );
 
-        TaskExecutor taskExecutor = new SimpleAsyncTaskExecutor();
-        tasks.forEach(task -> taskExecutor.execute(task));
+        //TaskExecutor taskExecutor = new SimpleAsyncTaskExecutor();
+        ExecutorService executorService = Executors.newFixedThreadPool(3);
+        tasks.forEach(task -> executorService.execute(task));
+        executorService.shutdown();
     }
 }

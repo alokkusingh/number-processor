@@ -2,12 +2,12 @@ package com.alok.number.processor.compute;
 
 import com.alok.number.processor.compute.task.*;
 import lombok.Builder;
-import org.springframework.core.task.SyncTaskExecutor;
-import org.springframework.core.task.TaskExecutor;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @Builder
 public class SyncProcessor implements Processor {
@@ -37,7 +37,9 @@ public class SyncProcessor implements Processor {
                 SummaryPrinter.builder().numbers(sortedNumbers).type("SEQUENTIAL").build()
         );
 
-        TaskExecutor taskExecutor = new SyncTaskExecutor();
-        tasks.forEach(task -> taskExecutor.execute(task));
+        //TaskExecutor taskExecutor = new SyncTaskExecutor();
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        tasks.forEach(task -> executorService.execute(task));
+        executorService.shutdown();
     }
 }

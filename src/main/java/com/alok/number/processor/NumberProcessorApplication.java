@@ -8,6 +8,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.util.HashSet;
+import java.util.Set;
 
 @SpringBootApplication
 public class NumberProcessorApplication {
@@ -23,7 +24,7 @@ public class NumberProcessorApplication {
 
 		String type = args[args.length - 1];
 
-		HashSet numbers = new HashSet<Integer>();
+		Set<Integer> numbers = new HashSet<>();
 		try {
 			for (int i = 0; i < args.length - 1; i++) {
 				numbers.add(Integer.parseInt(args[i]));
