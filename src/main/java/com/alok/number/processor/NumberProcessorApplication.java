@@ -25,7 +25,7 @@ public class NumberProcessorApplication {
 
 		HashSet numbers = new HashSet<Integer>();
 		try {
-			for (int i = 0; i < args.length - 2; i++) {
+			for (int i = 0; i < args.length - 1; i++) {
 				numbers.add(Integer.parseInt(args[i]));
 			}
 		} catch (NumberFormatException nfe) {
