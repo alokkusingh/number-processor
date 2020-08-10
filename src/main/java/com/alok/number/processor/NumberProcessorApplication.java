@@ -24,8 +24,12 @@ public class NumberProcessorApplication {
 		String type = args[args.length - 1];
 
 		HashSet numbers = new HashSet<Integer>();
-		for (int i = 0; i < args.length - 2; i++) {
-			numbers.add(Integer.parseInt(args[i]));
+		try {
+			for (int i = 0; i < args.length - 2; i++) {
+				numbers.add(Integer.parseInt(args[i]));
+			}
+		} catch (NumberFormatException nfe) {
+			throw new IllegalArgumentException("All the arguments except the last one should be valid number - {2 to 5 numbers} {SEQUENTIAL|PARALLEL}");
 		}
 
 		Processor processor = null;
