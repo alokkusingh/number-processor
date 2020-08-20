@@ -78,9 +78,9 @@ Get the latest build from [number-processor](https://github.com/alokkusingh/numb
 Build Docker Image
 ```
 cd number-processor
-docker build -t alokkusingh/number-processor:1.0.0 --build-arg JAR_FILE=target/number-processor-1.0.0.jar .
+docker build -t alokkusingh/number-processor:latest -t alokkusingh/number-processor:1.0.0 --build-arg JAR_FILE=target/number-processor-1.0.0.jar .
 ``` 
 Pull/Run Docker Container
 ```
-docker run --name number-processor alokkusingh/number-processor:1.0.0 1 2 6 4 3 SEQUENTIALL
+docker run --rm --name number-processor alokkusingh/number-processor 1 2 6 4 3 SEQUENTIAL
 ```
