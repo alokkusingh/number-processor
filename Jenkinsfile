@@ -55,8 +55,8 @@ pipeline {
 
     post {
         always {
-          archiveArtifacts artifacts: 'target/*.jar'
-          junit 'target/surefire-reports/*.xml'
+          archiveArtifacts artifacts: 'target/**/*.jar'
+          junit 'target/**/*.xml'
         }
         success {
             sh "docker push ${DOCKER_REGISTRY}/${ARTIFACT}:${VERSION}"
