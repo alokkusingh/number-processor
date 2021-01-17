@@ -54,7 +54,7 @@ pipeline {
 
     post {
         always {
-          archiveArtifacts
+          archiveArtifacts artifacts: 'target/*.jar'
         }
         success {
             sh "docker push ${DOCKER_REGISTRY}/${ARTIFACT}:${VERSION}"
