@@ -11,15 +11,19 @@ pipeline {
         }
 
         stage ('Test Stage') {
+            steps {
                 withMaven(maven : 'maven-3-6-3') {
                     sh 'mvn test'
                 }
+            }
         }
 
         stage ('Deploy Stage') {
+            steps {
                 withMaven(maven : 'maven-3-6-3') {
                     sh 'mvn deploy'
                 }
+            }
         }
 
         stage ('Create Docker Image Stage') {
