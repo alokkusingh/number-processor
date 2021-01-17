@@ -44,7 +44,8 @@ pipeline {
             steps {
                 echo "Building ${ARTIFACT} - ${VERSION}"
                 //sh "eval \$(docker-machine env default)"
-                zsh "docker build -t ${DOCKER_REGISTRY}/${ARTIFACT}:latest -t ${DOCKER_REGISTRY}/${ARTIFACT}:${VERSION} --build-arg JAR_FILE=target/${ARTIFACT}-${VERSION}.jar ."
+                sh '''#!/bin/zsh -l
+                sh "docker build -t ${DOCKER_REGISTRY}/${ARTIFACT}:latest -t ${DOCKER_REGISTRY}/${ARTIFACT}:${VERSION} --build-arg JAR_FILE=target/${ARTIFACT}-${VERSION}.jar ."
             }
         }
     }
