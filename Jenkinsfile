@@ -43,7 +43,7 @@ pipeline {
         stage ('Build Docker Image Stage') {
             steps {
                 echo "Building ${ARTIFACT} - ${VERSION}"
-                sh docker build -t "${DOCKER_REGISTRY}/${ARTIFACT}:latest" -t "${DOCKER_REGISTRY}/${ARTIFACT}:${VERSION}" --build-arg "JAR_FILE=target/${ARTIFACT}-${VERSION}.jar" .
+                //sh docker build -t "${DOCKER_REGISTRY}/${ARTIFACT}:latest" -t "${DOCKER_REGISTRY}/${ARTIFACT}:${VERSION}" --build-arg "JAR_FILE=target/${ARTIFACT}-${VERSION}.jar" .
             }
         }
     }
