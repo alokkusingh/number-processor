@@ -7,7 +7,7 @@ pipeline {
     //}
 
     environment {
-        DOCKER_REGISTRY = alokkusingh
+        DOCKER_REGISTRY = 'alokkusingh'
         //Use Pipeline Utility Steps plugin to read information from pom.xml into env variables
         ARTIFACT = readMavenPom().getArtifactId()
         VERSION = readMavenPom().getVersion()
