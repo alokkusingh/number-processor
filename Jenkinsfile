@@ -21,7 +21,7 @@ pipeline {
         stage ('Deploy Stage') {
             steps {
                 withMaven(maven : 'maven-3-6-3') {
-                    sh 'mvn deploy'
+                    sh 'mvn deploy -DskipTests'
                 }
             }
         }
