@@ -36,13 +36,14 @@ pipeline {
             }
         }
 
-        //stage ('Deploy Stage') {
-        //    steps {
-        //        withMaven(maven : 'maven-3-6-3') {
-        //            sh 'mvn deploy -DskipTests'
-        //        }
-        //    }
-        //}
+        stage ('Deploy Artifact') {
+            steps {
+                withMaven(maven : 'maven-3-6-3') {
+                    echo "Skiping for now!"
+                    //sh 'mvn deploy -DskipTests'
+                }
+            }
+        }
 
         stage ('Build Docker Image') {
             steps {
