@@ -43,6 +43,7 @@ pipeline {
         stage ('Build Docker Image Stage') {
             steps {
                 echo "Building ${ARTIFACT} - ${VERSION}"
+                sh "eval $(docker-machine env default)"
                 sh "docker build -t ${DOCKER_REGISTRY}/${ARTIFACT}:latest -t ${DOCKER_REGISTRY}/${ARTIFACT}:${VERSION} --build-arg JAR_FILE=target/${ARTIFACT}-${VERSION}.jar ."
             }
         }
