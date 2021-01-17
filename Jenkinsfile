@@ -25,11 +25,5 @@ pipeline {
                 }
             }
         }
-
-        stage ('Create Docker Image Stage') {
-        }
-
-        stage ('Deploy Docker Image Stage') {
-        }
     }
 }
