@@ -16,7 +16,7 @@ pipeline {
     stages {
         stage ('Compile Stage') {
             steps {
-                echo "Building ${IMAGE} - ${VERSION}"
+                echo "Building ${ARTIFACT} - ${VERSION}"
                 withMaven(maven : 'maven-3-6-3') {
                     //sh 'mvn clean compile'
                     sh 'mvn clean package -DskipTests'
@@ -42,7 +42,8 @@ pipeline {
 
         stage ('Build Docker Image Stage') {
             steps {
-                sh docker build -t ${DOCKER_REGISTRY}/${ARTIFACT}:latest -t ${DOCKER_REGISTRY}/${ARTIFACT}:${VERSION} --build-arg JAR_FILE=target/${ARTIFACT}-${VERSION}.jar .
+                echo "Building ${ARTIFACT} - ${VERSION}"
+                sh docker build -t "${DOCKER_REGISTRY}/${ARTIFACT}:latest" -t "${DOCKER_REGISTRY}/${ARTIFACT}:${VERSION}" --build-arg "JAR_FILE=target/${ARTIFACT}-${VERSION}.jar" .
             }
         }
     }
