@@ -48,7 +48,7 @@ pipeline {
         stage ('Build Docker Image') {
             steps {
                 echo "Building ${ARTIFACT} - ${VERSION}"
-                sh "docker build -t ${DOCKER_REGISTRY}/${ARTIFACT}:latest -t ${DOCKER_REGISTRY}/${ARTIFACT}:${VERSION} --build-arg JAR_FILE=target/${ARTIFACT}-${VERSION}.jar ."
+                sh "docker build -t ${DOCKER_REGISTRY}/${ARTIFACT}-dev:latest -t ${DOCKER_REGISTRY}/${ARTIFACT}-dev:${VERSION} --build-arg JAR_FILE=target/${ARTIFACT}-${VERSION}.jar ."
             }
         }
     }
@@ -59,8 +59,8 @@ pipeline {
           junit 'target/**/*.xml'
         }
         success {
-            sh "docker push ${DOCKER_REGISTRY}/${ARTIFACT}:${VERSION}"
-            sh "docker push ${DOCKER_REGISTRY}/${ARTIFACT}:latest"
+            sh "docker push ${DOCKER_REGISTRY}/${ARTIFACT}-dev:${VERSION}"
+            sh "docker push ${DOCKER_REGISTRY}/${ARTIFACT}-dev:latest"
         }
       }
 }
