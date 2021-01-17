@@ -18,7 +18,7 @@ pipeline {
     }
 
     stages {
-        stage ('Compile Stage') {
+        stage ('Compile') {
             steps {
                 echo "Building ${ARTIFACT} - ${VERSION}"
                 withMaven(maven : 'maven-3-6-3') {
@@ -28,10 +28,10 @@ pipeline {
             }
         }
 
-        stage ('Test Stage') {
+        stage ('Test') {
             steps {
                 withMaven(maven : 'maven-3-6-3') {
-                    sh 'mvn test'
+                    sh 'mvn verify'
                 }
             }
         }
@@ -44,7 +44,7 @@ pipeline {
         //    }
         //}
 
-        stage ('Build Docker Image Stage') {
+        stage ('Build Docker Image') {
             steps {
                 echo "Building ${ARTIFACT} - ${VERSION}"
                 sh "docker build -t ${DOCKER_REGISTRY}/${ARTIFACT}:latest -t ${DOCKER_REGISTRY}/${ARTIFACT}:${VERSION} --build-arg JAR_FILE=target/${ARTIFACT}-${VERSION}.jar ."
