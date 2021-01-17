@@ -18,20 +18,20 @@ pipeline {
     }
 
     stages {
-        stage ('Compile') {
-            steps {
-                echo "Building ${ARTIFACT} - ${VERSION}"
-                withMaven(maven : 'maven-3-6-3') {
-                    //sh 'mvn clean compile'
-                    sh 'mvn clean package -DskipTests'
-                }
-            }
-        }
+        //stage ('Compile') {
+        //    steps {
+        //        echo "Building ${ARTIFACT} - ${VERSION}"
+        //        withMaven(maven : 'maven-3-6-3') {
+        //            //sh 'mvn clean compile'
+        //            sh 'mvn clean package -DskipTests'
+        //        }
+        //    }
+        //}
 
-        stage ('Test') {
+        stage ('Test and Package') {
             steps {
                 withMaven(maven : 'maven-3-6-3') {
-                    sh 'mvn verify'
+                    sh 'mvn clean verify package'
                 }
             }
         }
@@ -39,7 +39,7 @@ pipeline {
         stage ('Deploy Artifact') {
             steps {
                 withMaven(maven : 'maven-3-6-3') {
-                    echo "Skiping for now!"
+                    echo "Skipping for now!"
                     //sh 'mvn deploy -DskipTests'
                 }
             }
