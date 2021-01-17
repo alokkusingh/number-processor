@@ -28,10 +28,10 @@ pipeline {
         //    }
         //}
 
-        stage ('Test and Package') {
+        stage ('Compile, Test and Package') {
             steps {
                 withMaven(maven : 'maven-3-6-3') {
-                    sh 'mvn clean verify package'
+                    sh './mvnw clean verify package'
                 }
             }
         }
@@ -56,7 +56,7 @@ pipeline {
     post {
         always {
           archiveArtifacts artifacts: 'target/*.jar'
-          junit '**/target/surefire-reports/*.xml'
+          junit 'target/surefire-reports/*.xml'
         }
         success {
             sh "docker push ${DOCKER_REGISTRY}/${ARTIFACT}:${VERSION}"
