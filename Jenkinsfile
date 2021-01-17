@@ -1,15 +1,16 @@
 pipeline {
-    environment {
-        //Use Pipeline Utility Steps plugin to read information from pom.xml into env variables
-        IMAGE = readMavenPom().getArtifactId()
-        VERSION = readMavenPom().getVersion()
-    }
+    agent any
+    //agent {
+    //    dockerfile {
+    //        additionalBuildArgs  "--build-arg JAR_FILE=target/${IMAGE}-${VERSION}.jar"
+    //    }
+    //}
 
-    //agent any
-    agent {
-        dockerfile {
-            additionalBuildArgs  '--build-arg JAR_FILE=target/${IMAGE}-${VERSION}.jar'
-        }
+    environment {
+        DOCKER_REGISTRY = alokkusingh
+        //Use Pipeline Utility Steps plugin to read information from pom.xml into env variables
+        ARTIFACT = readMavenPom().getArtifactId()
+        VERSION = readMavenPom().getVersion()
     }
 
     stages {
@@ -31,11 +32,17 @@ pipeline {
             }
         }
 
-        stage ('Deploy Stage') {
+        //stage ('Deploy Stage') {
+        //    steps {
+        //        withMaven(maven : 'maven-3-6-3') {
+        //            sh 'mvn deploy -DskipTests'
+        //        }
+        //    }
+        //}
+
+        stage ('Build Docker Image Stage') {
             steps {
-                withMaven(maven : 'maven-3-6-3') {
-                    sh 'mvn deploy -DskipTests'
-                }
+                sh docker build -t ${DOCKER_REGISTRY}/${ARTIFACT}:latest -t ${DOCKER_REGISTRY}/${ARTIFACT}:${VERSION} --build-arg JAR_FILE=target/${ARTIFACT}-${VERSION}.jar .
             }
         }
     }
