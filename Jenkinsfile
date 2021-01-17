@@ -8,6 +8,10 @@ pipeline {
 
     environment {
         DOCKER_REGISTRY = 'alokkusingh'
+        DOCKER_TLS_VERIFY = "1"
+        DOCKER_HOST = "tcp://192.168.99.104:2376"
+        DOCKER_CERT_PATH = "/Users/aloksingh/.docker/machine/machines/default"
+        DOCKER_MACHINE_NAME = "default"
         //Use Pipeline Utility Steps plugin to read information from pom.xml into env variables - pipeline-utility-steps plugin
         ARTIFACT = readMavenPom().getArtifactId()
         VERSION = readMavenPom().getVersion()
@@ -43,8 +47,6 @@ pipeline {
         stage ('Build Docker Image Stage') {
             steps {
                 echo "Building ${ARTIFACT} - ${VERSION}"
-                //sh "eval \$(docker-machine env default)"
-                sh '''#!/bin/zsh -l
                 sh "docker build -t ${DOCKER_REGISTRY}/${ARTIFACT}:latest -t ${DOCKER_REGISTRY}/${ARTIFACT}:${VERSION} --build-arg JAR_FILE=target/${ARTIFACT}-${VERSION}.jar ."
             }
         }
