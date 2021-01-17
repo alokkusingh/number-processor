@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.alok</groupId>
 	<artifactId>number-processor</artifactId>
-	<version>1.1.1</version>
+	<version>1.1.2</version>
 	<name>number-processor</name>
 	<description>Number Processor</description>
 
