@@ -39,7 +39,7 @@ pipeline {
                     } else if (env.BRANCH_NAME == 'dev') {
                         sh "docker build -t ${DOCKER_REGISTRY}/${ARTIFACT}-dev:latest -t ${DOCKER_REGISTRY}/${ARTIFACT}-dev:${VERSION} --build-arg JAR_FILE=target/${ARTIFACT}-${VERSION}.jar ENV_NAME=dev ."
                     } else {
-                        echo "Don't know how to create image for ${env.BRANCH_NAME} branch, ${BRANCH_NAME}"
+                        echo "Don't know how to create image for ${env.BRANCH_NAME} branch, ${env.GIT_BRANCH}"
                     }
                 }
             }
