@@ -1,10 +1,5 @@
 pipeline {
     agent any
-    //agent {
-    //    dockerfile {
-    //        additionalBuildArgs  "--build-arg JAR_FILE=target/${IMAGE}-${VERSION}.jar"
-    //    }
-    //}
 
     environment {
         DOCKER_REGISTRY = 'alokkusingh'
@@ -18,16 +13,6 @@ pipeline {
     }
 
     stages {
-        //stage ('Compile') {
-        //    steps {
-        //        echo "Building ${ARTIFACT} - ${VERSION}"
-        //        withMaven(maven : 'maven-3-6-3') {
-        //            //sh 'mvn clean compile'
-        //            sh 'mvn clean package -DskipTests'
-        //        }
-        //    }
-        //}
-
         stage ('Compile, Test and Package') {
             steps {
                 withMaven(maven : 'maven-3-6-3') {
@@ -48,7 +33,15 @@ pipeline {
         stage ('Build Docker Image') {
             steps {
                 echo "Building ${ARTIFACT} - ${VERSION}"
-                sh "docker build -t ${DOCKER_REGISTRY}/${ARTIFACT}-dev:latest -t ${DOCKER_REGISTRY}/${ARTIFACT}-dev:${VERSION} --build-arg JAR_FILE=target/${ARTIFACT}-${VERSION}.jar ."
+                script {
+                    if (env.BRANCH_NAME == 'master') {
+                        sh "docker build -t ${DOCKER_REGISTRY}/${ARTIFACT}:latest -t ${DOCKER_REGISTRY}/${ARTIFACT}:${VERSION} --build-arg JAR_FILE=target/${ARTIFACT}-${VERSION}.jar ENV_NAME=prod ."
+                    } else if (env.BRANCH_NAME == 'dev') {
+                        sh "docker build -t ${DOCKER_REGISTRY}/${ARTIFACT}-dev:latest -t ${DOCKER_REGISTRY}/${ARTIFACT}-dev:${VERSION} --build-arg JAR_FILE=target/${ARTIFACT}-${VERSION}.jar ENV_NAME=dev ."
+                    } else {
+                        echo "Don't know how to create image for ${env.BRANCH_NAME} branch"
+                    }
+                }
             }
         }
     }
@@ -59,8 +52,17 @@ pipeline {
           junit 'target/**/*.xml'
         }
         success {
-            sh "docker push ${DOCKER_REGISTRY}/${ARTIFACT}-dev:${VERSION}"
-            sh "docker push ${DOCKER_REGISTRY}/${ARTIFACT}-dev:latest"
+            script {
+                if (env.BRANCH_NAME == 'master') {
+                    sh "docker push ${DOCKER_REGISTRY}/${ARTIFACT}:${VERSION}"
+                    sh "docker push ${DOCKER_REGISTRY}/${ARTIFACT}:latest"
+                } else if (env.BRANCH_NAME == 'dev') {
+                    sh "docker push ${DOCKER_REGISTRY}/${ARTIFACT}-dev:${VERSION}"
+                    sh "docker push ${DOCKER_REGISTRY}/${ARTIFACT}-dev:latest"
+                } else {
+                    echo "Don't know which image to push ${env.BRANCH_NAME} branch"
+                }
+            }
         }
       }
 }
