@@ -34,9 +34,9 @@ pipeline {
             steps {
                 echo "Building ${ARTIFACT} - ${VERSION}"
                 script {
-                    if (env.BRANCH_NAME == 'master') {
+                    if (env.GIT_BRANCH == 'origin/master') {
                         sh "docker build -t ${DOCKER_REGISTRY}/${ARTIFACT}:latest -t ${DOCKER_REGISTRY}/${ARTIFACT}:${VERSION} --build-arg JAR_FILE=target/${ARTIFACT}-${VERSION}.jar ENV_NAME=prod ."
-                    } else if (env.BRANCH_NAME == 'dev') {
+                    } else if (env.GIT_BRANCH == 'origin/dev') {
                         sh "docker build -t ${DOCKER_REGISTRY}/${ARTIFACT}-dev:latest -t ${DOCKER_REGISTRY}/${ARTIFACT}-dev:${VERSION} --build-arg JAR_FILE=target/${ARTIFACT}-${VERSION}.jar ENV_NAME=dev ."
                     } else {
                         echo "Don't know how to create image for ${env.BRANCH_NAME} branch, ${env.GIT_BRANCH}"
@@ -53,10 +53,10 @@ pipeline {
         }
         success {
             script {
-                if (env.BRANCH_NAME == 'master') {
+                if (env.GIT_BRANCH == 'origin/master') {
                     sh "docker push ${DOCKER_REGISTRY}/${ARTIFACT}:${VERSION}"
                     sh "docker push ${DOCKER_REGISTRY}/${ARTIFACT}:latest"
-                } else if (env.BRANCH_NAME == 'dev') {
+                } else if (env.GIT_BRANCH == 'origin/dev') {
                     sh "docker push ${DOCKER_REGISTRY}/${ARTIFACT}-dev:${VERSION}"
                     sh "docker push ${DOCKER_REGISTRY}/${ARTIFACT}-dev:latest"
                 } else {
