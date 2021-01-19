@@ -2,13 +2,14 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_REGISTRY = 'alokkusingh'
+        DOCKER_REGISTRY = getDockerRegistry(env.GIT_BRANCH)
         DOCKER_TLS_VERIFY = "1"
         DOCKER_HOST = "tcp://192.168.99.104:2376"
         DOCKER_CERT_PATH = "/Users/aloksingh/.docker/machine/machines/default"
         DOCKER_MACHINE_NAME = "default"
         ENV_NAME = getEnvName(env.GIT_BRANCH)
-        AWS_KEY = getKey(env.GIT_BRANCH)
+        AWS_CLI_KEY = getAwsCliKey(env.GIT_BRANCH)
+        AWS_CLI_SECRET = getAwsCliSecret(env.GIT_BRANCH)
         //Use Pipeline Utility Steps plugin to read information from pom.xml into env variables - pipeline-utility-steps plugin
         ARTIFACT = readMavenPom().getArtifactId()
         VERSION = readMavenPom().getVersion()
@@ -79,11 +80,32 @@ def getEnvName(branchName) {
     }
 }
 
-def getKey(branchName) {
+
+def getDockerRegistry(branchName) {
     if("origin/master".equals(branchName)) {
-        return credentials('aws-key-prod');
+        return "alokkusingh";
     } else if ("origin/dev".equals(branchName)) {
-        return credentials('aws-key-dev');
+        return "alokkusingh";
+    } else {
+        return "unknown";
+    }
+}
+
+def getAwsCliKey(branchName) {
+    if("origin/master".equals(branchName)) {
+        return "";
+    } else if ("origin/dev".equals(branchName)) {
+        return "";
+    } else {
+        return "unknown";
+    }
+}
+
+def getAwsCliSecret(branchName) {
+    if("origin/master".equals(branchName)) {
+        return "";
+    } else if ("origin/dev".equals(branchName)) {
+        return "";
     } else {
         return "unknown";
     }
