@@ -7,9 +7,7 @@ pipeline {
         DOCKER_HOST = "tcp://192.168.99.104:2376"
         DOCKER_CERT_PATH = "/Users/aloksingh/.docker/machine/machines/default"
         DOCKER_MACHINE_NAME = "default"
-
-        ENV_NAME = "${env.GIT_BRANCH == "origin/master" ? "prod" : ${env.GIT_BRANCH == "origin/dev" ? "dev": "future"}"
-
+        ENV_NAME = "${env.GIT_BRANCH} == 'origin/master' ? 'prod' : ${env.GIT_BRANCH} == 'origin/dev' ? 'dev': 'future'"
         //Use Pipeline Utility Steps plugin to read information from pom.xml into env variables - pipeline-utility-steps plugin
         ARTIFACT = readMavenPom().getArtifactId()
         VERSION = readMavenPom().getVersion()
