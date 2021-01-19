@@ -8,6 +8,7 @@ pipeline {
         DOCKER_CERT_PATH = "/Users/aloksingh/.docker/machine/machines/default"
         DOCKER_MACHINE_NAME = "default"
         ENV_NAME = getEnvName(env.GIT_BRANCH)
+        AWS_KEY = getKey(env.GIT_BRANCH)
         //Use Pipeline Utility Steps plugin to read information from pom.xml into env variables - pipeline-utility-steps plugin
         ARTIFACT = readMavenPom().getArtifactId()
         VERSION = readMavenPom().getVersion()
@@ -33,7 +34,7 @@ pipeline {
 
         stage ('Build Docker Image') {
             steps {
-                echo "Building ${ARTIFACT} - ${VERSION} - ${ENV_NAME}"
+                echo "Building ${ARTIFACT} - ${VERSION} - ${ENV_NAME} - AWS_KEY"
                 script {
                     if (env.GIT_BRANCH == 'origin/master') {
                         sh "docker build -t ${DOCKER_REGISTRY}/${ARTIFACT}:latest -t ${DOCKER_REGISTRY}/${ARTIFACT}:${VERSION} --build-arg JAR_FILE=target/${ARTIFACT}-${VERSION}.jar --build-arg ENV_NAME=${ENV_NAME} ."
@@ -75,5 +76,15 @@ def getEnvName(branchName) {
         return "dev";
     } else {
         return "future";
+    }
+}
+
+def getKey(branchName) {
+    if("origin/master".equals(branchName)) {
+        return credentials('aws-key-prod');
+    } else if ("origin/dev".equals(branchName)) {
+        return credentials('aws-key-dev');
+    } else {
+        return "unknown";
     }
 }
