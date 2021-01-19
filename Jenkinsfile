@@ -7,6 +7,17 @@ pipeline {
         DOCKER_HOST = "tcp://192.168.99.104:2376"
         DOCKER_CERT_PATH = "/Users/aloksingh/.docker/machine/machines/default"
         DOCKER_MACHINE_NAME = "default"
+
+        script {
+            if (env.GIT_BRANCH == 'origin/master') {
+                ENV_NAME = "prod"
+            } else if (env.GIT_BRANCH == 'origin/dev') {
+                ENV_NAME = "dev"
+            } else {
+                echo "Don't know how to create image for ${env.GIT_BRANCH} branch"
+                ENV_NAME = ""
+            }
+        }
         //Use Pipeline Utility Steps plugin to read information from pom.xml into env variables - pipeline-utility-steps plugin
         ARTIFACT = readMavenPom().getArtifactId()
         VERSION = readMavenPom().getVersion()
@@ -35,9 +46,9 @@ pipeline {
                 echo "Building ${ARTIFACT} - ${VERSION}"
                 script {
                     if (env.GIT_BRANCH == 'origin/master') {
-                        sh "docker build -t ${DOCKER_REGISTRY}/${ARTIFACT}:latest -t ${DOCKER_REGISTRY}/${ARTIFACT}:${VERSION} --build-arg JAR_FILE=target/${ARTIFACT}-${VERSION}.jar --build-arg ENV_NAME=prod ."
+                        sh "docker build -t ${DOCKER_REGISTRY}/${ARTIFACT}:latest -t ${DOCKER_REGISTRY}/${ARTIFACT}:${VERSION} --build-arg JAR_FILE=target/${ARTIFACT}-${VERSION}.jar --build-arg ENV_NAME=${ENV_NAME} ."
                     } else if (env.GIT_BRANCH == 'origin/dev') {
-                        sh "docker build -t ${DOCKER_REGISTRY}/${ARTIFACT}-dev:latest -t ${DOCKER_REGISTRY}/${ARTIFACT}-dev:${VERSION} --build-arg JAR_FILE=target/${ARTIFACT}-${VERSION}.jar --build-arg ENV_NAME=dev ."
+                        sh "docker build -t ${DOCKER_REGISTRY}/${ARTIFACT}-dev:latest -t ${DOCKER_REGISTRY}/${ARTIFACT}-dev:${VERSION} --build-arg JAR_FILE=target/${ARTIFACT}-${VERSION}.jar --build-arg ENV_NAME=${ENV_NAME} ."
                     } else {
                         echo "Don't know how to create image for ${env.GIT_BRANCH} branch"
                     }
