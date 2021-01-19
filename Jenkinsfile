@@ -7,7 +7,7 @@ pipeline {
         DOCKER_HOST = "tcp://192.168.99.104:2376"
         DOCKER_CERT_PATH = "/Users/aloksingh/.docker/machine/machines/default"
         DOCKER_MACHINE_NAME = "default"
-        ENV_NAME = "${env.GIT_BRANCH} == 'origin/master' ? 'prod' : ${env.GIT_BRANCH} == 'origin/dev' ? 'dev': 'future'"
+        ENV_NAME = getEnvName(env.GIT_BRANCH)
         //Use Pipeline Utility Steps plugin to read information from pom.xml into env variables - pipeline-utility-steps plugin
         ARTIFACT = readMavenPom().getArtifactId()
         VERSION = readMavenPom().getVersion()
@@ -65,5 +65,15 @@ pipeline {
                 }
             }
         }
-      }
+    }
+}
+
+def getEnvName(branchName) {
+    if("origin/master".equals(branchName)) {
+        return "prod";
+    } else if ("origin/dev".equals(branchName)) {
+        return "dev";
+    } else {
+        return "future";
+    }
 }
