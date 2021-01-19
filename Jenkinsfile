@@ -8,16 +8,8 @@ pipeline {
         DOCKER_CERT_PATH = "/Users/aloksingh/.docker/machine/machines/default"
         DOCKER_MACHINE_NAME = "default"
 
-        script {
-            if (env.GIT_BRANCH == 'origin/master') {
-                ENV_NAME = "prod"
-            } else if (env.GIT_BRANCH == 'origin/dev') {
-                ENV_NAME = "dev"
-            } else {
-                echo "Don't know how to create image for ${env.GIT_BRANCH} branch"
-                ENV_NAME = ""
-            }
-        }
+        ENV_NAME = "${env.GIT_BRANCH == "origin/master" ? "prod" : ${env.GIT_BRANCH == "origin/dev" ? "dev": "future"}"
+
         //Use Pipeline Utility Steps plugin to read information from pom.xml into env variables - pipeline-utility-steps plugin
         ARTIFACT = readMavenPom().getArtifactId()
         VERSION = readMavenPom().getVersion()
@@ -43,7 +35,7 @@ pipeline {
 
         stage ('Build Docker Image') {
             steps {
-                echo "Building ${ARTIFACT} - ${VERSION}"
+                echo "Building ${ARTIFACT} - ${VERSION} - ${ENV_NAME}"
                 script {
                     if (env.GIT_BRANCH == 'origin/master') {
                         sh "docker build -t ${DOCKER_REGISTRY}/${ARTIFACT}:latest -t ${DOCKER_REGISTRY}/${ARTIFACT}:${VERSION} --build-arg JAR_FILE=target/${ARTIFACT}-${VERSION}.jar --build-arg ENV_NAME=${ENV_NAME} ."
