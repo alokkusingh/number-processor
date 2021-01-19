@@ -19,7 +19,7 @@ pipeline {
         stage ('Compile, Test and Package') {
             steps {
                 withMaven(maven : 'maven-3-6-3') {
-                    sh './mvnw clean verify package'
+                    sh './mvnw clean verify package surefire-report:report-only'
                 }
             }
         }
