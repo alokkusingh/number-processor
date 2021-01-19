@@ -34,7 +34,7 @@ pipeline {
 
         stage ('Build Docker Image') {
             steps {
-                echo "Building ${ARTIFACT} - ${VERSION} - ${ENV_NAME} - AWS_KEY"
+                echo "Building ${ARTIFACT} - ${VERSION} - ${ENV_NAME} - ${AWS_KEY}"
                 script {
                     if (env.GIT_BRANCH == 'origin/master') {
                         sh "docker build -t ${DOCKER_REGISTRY}/${ARTIFACT}:latest -t ${DOCKER_REGISTRY}/${ARTIFACT}:${VERSION} --build-arg JAR_FILE=target/${ARTIFACT}-${VERSION}.jar --build-arg ENV_NAME=${ENV_NAME} ."
