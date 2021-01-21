@@ -20,7 +20,9 @@ pipeline {
 
     stages {
         stage ('Compile, Test and Package') {
-            when { return DO_NOT_SKIP_BUILD == 'true' }
+            when {
+                expression {return DO_NOT_SKIP_BUILD == 'true' }
+            }
             steps {
                 withMaven(maven : 'maven-3-6-3') {
                     sh './mvnw clean jxr:jxr verify package surefire-report:report-only'
