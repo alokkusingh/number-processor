@@ -21,7 +21,7 @@ pipeline {
     stages {
         stage ('Compile, Test and Package') {
             when {
-                DO_NOT_SKIP_BUILD true
+                DO_NOT_SKIP_BUILD 'true'
             }
             steps {
                 withMaven(maven : 'maven-3-6-3') {
@@ -103,13 +103,13 @@ def doNotSkipBuild(branchName) {
     echo "Branch Name: ${branchName}"
     if( branchName == "master") {
         echo "Master"
-        return true;
+        return 'true';
     } else if (branchName == "dev") {
         echo "Dev"
-        return true;
+        return 'true';
     } else {
         echo "Other"
-        return false;
+        return 'false';
     }
 }
 
