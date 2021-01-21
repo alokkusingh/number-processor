@@ -66,18 +66,16 @@ pipeline {
             }
             steps {
                 script {
-                    withCredentials([usernamePassword(credentialsId: "aws-key-secret-${ENV_NAME}", usernameVariable: "awsKey", passwordVariable: "awsSecret")]) {
-                        echo "${awsKey} - ${awsSecret}"
-                        sh 'echo ${awsKey} - ${awsSecret}'
-                        if (BRANCH == 'master') {
-                            sh "docker push ${DOCKER_REGISTRY}/${ARTIFACT}:${VERSION}"
-                            sh "docker push ${DOCKER_REGISTRY}/${ARTIFACT}:latest"
-                        } else if (BRANCH == 'dev') {
-                            sh "docker push ${DOCKER_REGISTRY}/${ARTIFACT}-dev:${VERSION}"
-                            sh "docker push ${DOCKER_REGISTRY}/${ARTIFACT}-dev:latest"
-                        } else {
-                            echo "Don't know which image to push ${env.BRANCH_NAME} branch"
-                        }
+                    // the login profile has to be created in adavnce for each environemnt using: aws configure --profile jenkins-dev
+                    sh 'aws ecr get-login-password --profile jenkins-${ENV_NAME} | docker login --username AWS --password-stdin ${DOCKER_REGISTRY}'
+                    if (BRANCH == 'master') {
+                        sh "docker push ${DOCKER_REGISTRY}/${ARTIFACT}:${VERSION}"
+                        sh "docker push ${DOCKER_REGISTRY}/${ARTIFACT}:latest"
+                    } else if (BRANCH == 'dev') {
+                        sh "docker push ${DOCKER_REGISTRY}/${ARTIFACT}-dev:${VERSION}"
+                        sh "docker push ${DOCKER_REGISTRY}/${ARTIFACT}-dev:latest"
+                    } else {
+                        echo "Don't know which image to push ${env.BRANCH_NAME} branch"
                     }
                 }
             }
@@ -121,7 +119,7 @@ def getDockerRegistry(branchName) {
     if( branchName == "master") {
         return "alokkusingh";
     } else if (branchName == "dev") {
-        return "alokkusingh";
+        return "040180071884.dkr.ecr.ap-south-1.amazonaws.com";
     } else {
         return "unknown";
     }
