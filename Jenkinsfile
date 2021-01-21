@@ -21,7 +21,7 @@ pipeline {
     stages {
         stage ('Compile, Test and Package') {
             when {
-                expression { return SKIP_BUILD}
+                expression { return !SKIP_BUILD}
             }
             steps {
                 withMaven(maven : 'maven-3-6-3') {
