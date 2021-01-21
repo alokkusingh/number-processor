@@ -21,7 +21,7 @@ pipeline {
     stages {
         stage ('Compile, Test and Package') {
             when {
-                expression { DO_NOT_SKIP == true}
+                expression { DO_NOT_SKIP != true}
             }
             steps {
                 withMaven(maven : 'maven-3-6-3') {
@@ -32,7 +32,7 @@ pipeline {
 
         stage ('Deploy Artifact') {
             when {
-                expression { DO_NOT_SKIP == true}
+                expression { DO_NOT_SKIP != true}
             }
             steps {
                 withMaven(maven : 'maven-3-6-3') {
@@ -44,7 +44,7 @@ pipeline {
 
         stage ('Build Docker Image') {
             when {
-                expression { DO_NOT_SKIP == true}
+                expression { DO_NOT_SKIP != true}
             }
             steps {
                 echo "Building ${ARTIFACT} - ${VERSION} - ${ENV_NAME}"
@@ -62,7 +62,7 @@ pipeline {
 
         stage ('Push Docker Image') {
             when {
-                expression { DO_NOT_SKIP == true}
+                expression { DO_NOT_SKIP != true}
             }
             steps {
                 script {
@@ -126,12 +126,12 @@ def skipBuild(branchName) {
     echo "Branch Name: ${branchName}"
     if( branchName == "master") {
         echo "Master"
-        return true;
+        return false;
     } else if (branchName == "dev") {
         echo "Dev"
-        return true;
+        return false;
     } else {
         echo "Other"
-        return false;
+        return true;
     }
 }
