@@ -32,7 +32,7 @@ pipeline {
 
         stage ('Deploy Artifact') {
             when {
-                expression { return SKIP_BUILD != 'true' }
+                expression {return DO_NOT_SKIP_BUILD == 'true' }
             }
             steps {
                 withMaven(maven : 'maven-3-6-3') {
@@ -44,7 +44,7 @@ pipeline {
 
         stage ('Build Docker Image') {
             when {
-                expression { return SKIP_BUILD != 'true' }
+                expression {return DO_NOT_SKIP_BUILD == 'true' }
             }
             steps {
                 echo "Building ${ARTIFACT} - ${VERSION} - ${ENV_NAME}"
@@ -62,7 +62,7 @@ pipeline {
 
         stage ('Push Docker Image') {
             when {
-                expression { return SKIP_BUILD != 'true' }
+                expression {return DO_NOT_SKIP_BUILD == 'true' }
             }
             steps {
                 script {
