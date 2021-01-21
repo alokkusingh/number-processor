@@ -19,7 +19,7 @@ pipeline {
     }
 
     stages {
-        stage ('Compile, Test and Package - ${BRANCH} - ${env.BRANCH_NAME}') {
+        stage ('Compile, Test and Package') {
             when {
                 expression { DO_NOT_SKIP == true}
             }
@@ -123,11 +123,15 @@ def getAwsCliSecret(branchName) {
 }
 
 def skipBuild(branchName) {
+    echo "Branch Name: ${branchName}"
     if("master".equals(branchName)) {
+        echo "Master"
         return false;
     } else if ("dev".equals(branchName)) {
+        echo "Dev"
         return false;
     } else {
+        echo "Other"
         return true;
     }
 }
