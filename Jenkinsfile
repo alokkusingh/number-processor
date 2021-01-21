@@ -78,13 +78,6 @@ pipeline {
             }
         }
     }
-
-    post {
-        always {
-          archiveArtifacts artifacts: 'target/**/*.jar'
-          junit 'target/**/*.xml'
-        }
-    }
 }
 
 def getEnvName(branchName) {
