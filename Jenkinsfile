@@ -66,14 +66,17 @@ pipeline {
             }
             steps {
                 script {
-                    if (BRANCH == 'master') {
-                        sh "docker push ${DOCKER_REGISTRY}/${ARTIFACT}:${VERSION}"
-                        sh "docker push ${DOCKER_REGISTRY}/${ARTIFACT}:latest"
-                    } else if (BRANCH == 'dev') {
-                        sh "docker push ${DOCKER_REGISTRY}/${ARTIFACT}-dev:${VERSION}"
-                        sh "docker push ${DOCKER_REGISTRY}/${ARTIFACT}-dev:latest"
-                    } else {
-                        echo "Don't know which image to push ${env.BRANCH_NAME} branch"
+                    withCredentials([usernamePassword(credentialsId: 'aws-key-'${ENV_NAME}, usernameVariable: 'awsKey', passwordVariable: 'awsSecret')]) {
+                        echo "${awsKey} - ${awsSecret}"
+                        if (BRANCH == 'master') {
+                            sh "docker push ${DOCKER_REGISTRY}/${ARTIFACT}:${VERSION}"
+                            sh "docker push ${DOCKER_REGISTRY}/${ARTIFACT}:latest"
+                        } else if (BRANCH == 'dev') {
+                            sh "docker push ${DOCKER_REGISTRY}/${ARTIFACT}-dev:${VERSION}"
+                            sh "docker push ${DOCKER_REGISTRY}/${ARTIFACT}-dev:latest"
+                        } else {
+                            echo "Don't know which image to push ${env.BRANCH_NAME} branch"
+                        }
                     }
                 }
             }
