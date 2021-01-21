@@ -66,7 +66,7 @@ pipeline {
             }
             steps {
                 script {
-                    withCredentials([usernamePassword(credentialsId: "aws-key-${ENV_NAME}", usernameVariable: "awsKey", passwordVariable: "awsSecret")]) {
+                    withCredentials([usernamePassword(credentialsId: "aws-key-secret-${ENV_NAME}", usernameVariable: "awsKey", passwordVariable: "awsSecret")]) {
                         echo "${awsKey} - ${awsSecret}"
                         if (BRANCH == 'master') {
                             sh "docker push ${DOCKER_REGISTRY}/${ARTIFACT}:${VERSION}"
