@@ -15,24 +15,24 @@ pipeline {
         //Use Pipeline Utility Steps plugin to read information from pom.xml into env variables - pipeline-utility-steps plugin
         ARTIFACT = readMavenPom().getArtifactId()
         VERSION = readMavenPom().getVersion()
-        DO_NOT_SKIP = skipBuild(BRANCH)
+        SKIP_BUILD = skipBuild(BRANCH)
     }
 
     stages {
         stage ('Compile, Test and Package') {
             when {
-                expression { DO_NOT_SKIP != true}
+                expression { SKIP_BUILD != true}
             }
             steps {
                 withMaven(maven : 'maven-3-6-3') {
-                    sh './mvnw clean verify package surefire-report:report-only'
+                    sh './mvnw clean jxr:jxr verify package surefire-report:report-only'
                 }
             }
         }
 
         stage ('Deploy Artifact') {
             when {
-                expression { DO_NOT_SKIP != true}
+                expression { SKIP_BUILD != true}
             }
             steps {
                 withMaven(maven : 'maven-3-6-3') {
@@ -44,7 +44,7 @@ pipeline {
 
         stage ('Build Docker Image') {
             when {
-                expression { DO_NOT_SKIP != true}
+                expression { SKIP_BUILD != true}
             }
             steps {
                 echo "Building ${ARTIFACT} - ${VERSION} - ${ENV_NAME}"
@@ -62,7 +62,7 @@ pipeline {
 
         stage ('Push Docker Image') {
             when {
-                expression { DO_NOT_SKIP != true}
+                expression { SKIP_BUILD != true}
             }
             steps {
                 script {
@@ -91,6 +91,19 @@ def getEnvName(branchName) {
     }
 }
 
+def skipBuild(branchName) {
+    echo "Branch Name: ${branchName}"
+    if( branchName == "master") {
+        echo "Master"
+        return false;
+    } else if (branchName == "dev") {
+        echo "Dev"
+        return false;
+    } else {
+        echo "Other"
+        return true;
+    }
+}
 
 def getDockerRegistry(branchName) {
     if( branchName == "master") {
@@ -122,16 +135,3 @@ def getAwsCliSecret(branchName) {
     }
 }
 
-def skipBuild(branchName) {
-    echo "Branch Name: ${branchName}"
-    if( branchName == "master") {
-        echo "Master"
-        return false;
-    } else if (branchName == "dev") {
-        echo "Dev"
-        return false;
-    } else {
-        echo "Other"
-        return true;
-    }
-}
