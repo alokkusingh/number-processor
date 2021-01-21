@@ -124,10 +124,10 @@ def getAwsCliSecret(branchName) {
 
 def skipBuild(branchName) {
     echo "Branch Name: ${branchName}"
-    if("master".equals(branchName)) {
+    if( branchName == "master") {
         echo "Master"
         return false;
-    } else if ("dev".equals(branchName)) {
+    } else if (branchName == "dev") {
         echo "Dev"
         return false;
     } else {
