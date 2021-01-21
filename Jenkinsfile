@@ -15,13 +15,13 @@ pipeline {
         //Use Pipeline Utility Steps plugin to read information from pom.xml into env variables - pipeline-utility-steps plugin
         ARTIFACT = readMavenPom().getArtifactId()
         VERSION = readMavenPom().getVersion()
-        SKIP_BUILD = skipBuild(BRANCH)
+        DO_NOT_SKIP_BUILD = doNotSkipBuild(BRANCH)
     }
 
     stages {
         stage ('Compile, Test and Package') {
             when {
-                expression { return SKIP_BUILD != true }
+                expression {return DO_NOT_SKIP_BUILD == 'true' }
             }
             steps {
                 withMaven(maven : 'maven-3-6-3') {
@@ -32,7 +32,7 @@ pipeline {
 
         stage ('Deploy Artifact') {
             when {
-                expression { return SKIP_BUILD != true }
+                expression {return DO_NOT_SKIP_BUILD == 'true' }
             }
             steps {
                 withMaven(maven : 'maven-3-6-3') {
@@ -44,7 +44,7 @@ pipeline {
 
         stage ('Build Docker Image') {
             when {
-                expression { return SKIP_BUILD != true }
+                expression {return DO_NOT_SKIP_BUILD == 'true' }
             }
             steps {
                 echo "Building ${ARTIFACT} - ${VERSION} - ${ENV_NAME}"
@@ -62,7 +62,7 @@ pipeline {
 
         stage ('Push Docker Image') {
             when {
-                expression { return SKIP_BUILD != true }
+                expression {return DO_NOT_SKIP_BUILD == 'true' }
             }
             steps {
                 script {
@@ -99,17 +99,17 @@ def getEnvName(branchName) {
     }
 }
 
-def skipBuild(branchName) {
+def doNotSkipBuild(branchName) {
     echo "Branch Name: ${branchName}"
     if( branchName == "master") {
         echo "Master"
-        return false;
+        return 'true';
     } else if (branchName == "dev") {
         echo "Dev"
-        return false;
+        return 'true';
     } else {
         echo "Other"
-        return true;
+        return 'false';
     }
 }
 
