@@ -68,6 +68,7 @@ pipeline {
                 script {
                     withCredentials([usernamePassword(credentialsId: "aws-key-secret-${ENV_NAME}", usernameVariable: "awsKey", passwordVariable: "awsSecret")]) {
                         echo "${awsKey} - ${awsSecret}"
+                        sh 'echo ${awsKey} - ${awsSecret}''
                         if (BRANCH == 'master') {
                             sh "docker push ${DOCKER_REGISTRY}/${ARTIFACT}:${VERSION}"
                             sh "docker push ${DOCKER_REGISTRY}/${ARTIFACT}:latest"
