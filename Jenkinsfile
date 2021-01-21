@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        //BRANCH = "${env.GIT_BRANCH}"
+        //BRANCH = "${env.GIT_BRANCH.split("/")[1]}"
         BRANCH = "${env.BRANCH_NAME}"
         DOCKER_REGISTRY = getDockerRegistry(BRANCH)
         DOCKER_TLS_VERIFY = "1"
@@ -19,7 +19,7 @@ pipeline {
     }
 
     stages {
-        stage ('Compile, Test and Package') {
+        stage ('Compile, Test and Package - ${BRANCH} - ${env.BRANCH_NAME}') {
             when {
                 expression { DO_NOT_SKIP == true}
             }
@@ -49,9 +49,9 @@ pipeline {
             steps {
                 echo "Building ${ARTIFACT} - ${VERSION} - ${ENV_NAME}"
                 script {
-                    if (BRANCH == 'origin/master') {
+                    if (BRANCH == 'master') {
                         sh "docker build -t ${DOCKER_REGISTRY}/${ARTIFACT}:latest -t ${DOCKER_REGISTRY}/${ARTIFACT}:${VERSION} --build-arg JAR_FILE=target/${ARTIFACT}-${VERSION}.jar --build-arg ENV_NAME=${ENV_NAME} ."
-                    } else if (BRANCH == 'origin/dev') {
+                    } else if (BRANCH == 'dev') {
                         sh "docker build -t ${DOCKER_REGISTRY}/${ARTIFACT}-dev:latest -t ${DOCKER_REGISTRY}/${ARTIFACT}-dev:${VERSION} --build-arg JAR_FILE=target/${ARTIFACT}-${VERSION}.jar --build-arg ENV_NAME=${ENV_NAME} ."
                     } else {
                         echo "Don't know how to create image for ${env.GIT_BRANCH} branch"
@@ -66,10 +66,10 @@ pipeline {
             }
             steps {
                 script {
-                    if (BRANCH == 'origin/master') {
+                    if (BRANCH == 'master') {
                         sh "docker push ${DOCKER_REGISTRY}/${ARTIFACT}:${VERSION}"
                         sh "docker push ${DOCKER_REGISTRY}/${ARTIFACT}:latest"
-                    } else if (BRANCH == 'origin/dev') {
+                    } else if (BRANCH == 'dev') {
                         sh "docker push ${DOCKER_REGISTRY}/${ARTIFACT}-dev:${VERSION}"
                         sh "docker push ${DOCKER_REGISTRY}/${ARTIFACT}-dev:latest"
                     } else {
@@ -82,9 +82,9 @@ pipeline {
 }
 
 def getEnvName(branchName) {
-    if("origin/master".equals(branchName)) {
+    if("master".equals(branchName)) {
         return "prod";
-    } else if ("origin/dev".equals(branchName)) {
+    } else if ("dev".equals(branchName)) {
         return "dev";
     } else {
         return "future";
@@ -93,9 +93,9 @@ def getEnvName(branchName) {
 
 
 def getDockerRegistry(branchName) {
-    if("origin/master".equals(branchName)) {
+    if("master".equals(branchName)) {
         return "alokkusingh";
-    } else if ("origin/dev".equals(branchName)) {
+    } else if ("dev".equals(branchName)) {
         return "alokkusingh";
     } else {
         return "unknown";
@@ -103,9 +103,9 @@ def getDockerRegistry(branchName) {
 }
 
 def getAwsCliKey(branchName) {
-    if("origin/master".equals(branchName)) {
+    if("master".equals(branchName)) {
         return "";
-    } else if ("origin/dev".equals(branchName)) {
+    } else if ("dev".equals(branchName)) {
         return "";
     } else {
         return "unknown";
@@ -113,9 +113,9 @@ def getAwsCliKey(branchName) {
 }
 
 def getAwsCliSecret(branchName) {
-    if("origin/master".equals(branchName)) {
+    if("master".equals(branchName)) {
         return "";
-    } else if ("origin/dev".equals(branchName)) {
+    } else if ("dev".equals(branchName)) {
         return "";
     } else {
         return "unknown";
@@ -123,12 +123,11 @@ def getAwsCliSecret(branchName) {
 }
 
 def skipBuild(branchName) {
-    if("origin/master".equals(branchName)) {
+    if("master".equals(branchName)) {
         return false;
-    } else if ("origin/dev".equals(branchName)) {
+    } else if ("dev".equals(branchName)) {
         return false;
     } else {
         return true;
     }
-
 }
