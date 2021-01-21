@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        BRANCH = env.GIT_BRANCH
+        BRANCH = "${env.GIT_BRANCH}"
         DOCKER_REGISTRY = getDockerRegistry(BRANCH)
         DOCKER_TLS_VERIFY = "1"
         DOCKER_HOST = "tcp://192.168.99.104:2376"
@@ -59,7 +59,7 @@ pipeline {
             }
         }
 
-        stage ('Build Docker Image') {
+        stage ('Push Docker Image') {
             when {
                 expression { DO_NOT_SKIP == true}
             }
@@ -83,8 +83,6 @@ pipeline {
         always {
           archiveArtifacts artifacts: 'target/**/*.jar'
           junit 'target/**/*.xml'
-        }
-        success {
         }
     }
 }
