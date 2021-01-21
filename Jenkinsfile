@@ -82,9 +82,9 @@ pipeline {
 }
 
 def getEnvName(branchName) {
-    if("master".equals(branchName)) {
+    if( branchName == "master") {
         return "prod";
-    } else if ("dev".equals(branchName)) {
+    } else if (branchName == "dev") {
         return "dev";
     } else {
         return "future";
@@ -93,9 +93,9 @@ def getEnvName(branchName) {
 
 
 def getDockerRegistry(branchName) {
-    if("master".equals(branchName)) {
+    if( branchName == "master") {
         return "alokkusingh";
-    } else if ("dev".equals(branchName)) {
+    } else if (branchName == "dev") {
         return "alokkusingh";
     } else {
         return "unknown";
@@ -103,9 +103,9 @@ def getDockerRegistry(branchName) {
 }
 
 def getAwsCliKey(branchName) {
-    if("master".equals(branchName)) {
+    if( branchName == "master") {
         return "";
-    } else if ("dev".equals(branchName)) {
+    } else if (branchName == "dev") {
         return "";
     } else {
         return "unknown";
@@ -113,9 +113,9 @@ def getAwsCliKey(branchName) {
 }
 
 def getAwsCliSecret(branchName) {
-    if("master".equals(branchName)) {
+    if( branchName == "master") {
         return "";
-    } else if ("dev".equals(branchName)) {
+    } else if (branchName == "dev") {
         return "";
     } else {
         return "unknown";
