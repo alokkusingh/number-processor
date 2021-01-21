@@ -122,12 +122,12 @@ def getAwsCliSecret(branchName) {
 }
 
 def skipBuild(branchName) {
-if("origin/master".equals(branchName)) {
-        return true;
-    } else if ("origin/dev".equals(branchName)) {
-        return true;
-    } else {
+    if("origin/master".equals(branchName)) {
         return false;
+    } else if ("origin/dev".equals(branchName)) {
+        return false;
+    } else {
+        return true;
     }
 
 }
