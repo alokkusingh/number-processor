@@ -91,6 +91,19 @@ def getEnvName(branchName) {
     }
 }
 
+def skipBuild(branchName) {
+    echo "Branch Name: ${branchName}"
+    if( branchName == "master") {
+        echo "Master"
+        return false;
+    } else if (branchName == "dev") {
+        echo "Dev"
+        return false;
+    } else {
+        echo "Other"
+        return true;
+    }
+}
 
 def getDockerRegistry(branchName) {
     if( branchName == "master") {
@@ -122,16 +135,3 @@ def getAwsCliSecret(branchName) {
     }
 }
 
-def skipBuild(branchName) {
-    echo "Branch Name: ${branchName}"
-    if( branchName == "master") {
-        echo "Master"
-        return false;
-    } else if (branchName == "dev") {
-        echo "Dev"
-        return false;
-    } else {
-        echo "Other"
-        return true;
-    }
-}
