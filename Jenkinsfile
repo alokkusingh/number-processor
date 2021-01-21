@@ -126,12 +126,12 @@ def skipBuild(branchName) {
     echo "Branch Name: ${branchName}"
     if( branchName == "master") {
         echo "Master"
-        return false;
+        return true;
     } else if (branchName == "dev") {
         echo "Dev"
-        return false;
+        return true;
     } else {
         echo "Other"
-        return true;
+        return false;
     }
 }
