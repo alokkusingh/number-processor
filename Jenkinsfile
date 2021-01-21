@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         //BRANCH = "${env.GIT_BRANCH.split("/")[1]}"
-        BRANCH = "${env.BRANCH_NAME}"
+        BRANCH = getBranchName()
         DOCKER_REGISTRY = getDockerRegistry(BRANCH)
         DOCKER_TLS_VERIFY = "1"
         DOCKER_HOST = "tcp://192.168.99.104:2376"
@@ -21,7 +21,7 @@ pipeline {
     stages {
         stage ('Compile, Test and Package') {
             when {
-                expression { return !SKIP_BUILD}
+                expression { return SKIP_BUILD != true }
             }
             steps {
                 withMaven(maven : 'maven-3-6-3') {
@@ -32,7 +32,7 @@ pipeline {
 
         stage ('Deploy Artifact') {
             when {
-                expression { return !SKIP_BUILD}
+                expression { return SKIP_BUILD != true }
             }
             steps {
                 withMaven(maven : 'maven-3-6-3') {
@@ -44,7 +44,7 @@ pipeline {
 
         stage ('Build Docker Image') {
             when {
-                expression { return !SKIP_BUILD}
+                expression { return SKIP_BUILD != true }
             }
             steps {
                 echo "Building ${ARTIFACT} - ${VERSION} - ${ENV_NAME}"
@@ -62,7 +62,7 @@ pipeline {
 
         stage ('Push Docker Image') {
             when {
-                expression { return !SKIP_BUILD}
+                expression { return SKIP_BUILD != true }
             }
             steps {
                 script {
@@ -78,6 +78,14 @@ pipeline {
                 }
             }
         }
+    }
+}
+
+def getBranchName() {
+    if (env.BRANCH_NAME.startsWith('PR')) {
+        return "${env.CHANGE_BRANCH}"
+    } else {
+        return "${env.BRANCH_NAME}"
     }
 }
 
